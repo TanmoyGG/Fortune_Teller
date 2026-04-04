@@ -1,0 +1,20 @@
+{
+  "name": "fortune-teller",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "generate:audio": ".\\.venv\\Scripts\\python.exe scripts\\generate_audio.py",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1",
+    "google-tts-api": "^2.0.2"
+  }
+}

@@ -1,0 +1,13 @@
+node_modules/
+.venv/
+*.log
+
+# Local environment / secrets
+.env
+.env.*
+
+# Dynamic/generated audio caches
+public/audio/names/
+public/audio/
+public/audio_cartoon/
+public/audio_cartoon_test/

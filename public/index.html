@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>পয়লা বৈশাখ ভাগ্য গণনা</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Screen 1: Welcome & Name Entry -->
+        <div id="screen-welcome" class="screen active">
+            <h1>শুভ নববর্ষ ১৪৩৩</h1>
+            <p>টিয়া পাখি আপনার ভাগ্য বলে দেবে!</p>
+            <!-- COMMENTED OUT FOR TESTING: Name input removed -->
+            <!-- <div class="input-group">
+                <input type="text" id="userNameInput" placeholder="আপনার নাম লিখুন..." autocomplete="off">
+            </div> -->
+            <div class="input-group">
+                <button id="btnStart">ভাগ্য যাচাই করুন</button>
+            </div>
+        </div>
+
+        <!-- Screen 2: Parrot tells to pick a card -->
+        <div id="screen-instruction" class="screen">
+            <div class="message-box">
+                <h2 id="instruction-text"></h2>
+                <p class="blink-text">কার্ড স্ক্যান করুন বা এনএফসি দিয়ে পাঞ্চ করুন...</p>
+                <!-- For Mobile Web NFC scanning start button -->
+                <button id="btnStartNFC" class="nfc-btn" style="display: none;">এনএফসি দিয়ে স্ক্যান করুন</button>
+            </div>
+        </div>
+
+        <!-- Screen 3: Fortune Reveal -->
+        <div id="screen-fortune" class="screen">
+            <h1 class="fortune-title">আপনার ভাগ্য লিপি</h1>
+            <div class="fortune-card">
+                <p id="fortune-text"></p>
+            </div>
+            <button id="btnRestart" class="btn-restart">আবার শুরু করুন</button>
+        </div>
+
+    </div>
+
+    <!-- Global Audio Element for TTS -->
+    <audio id="tts-player" style="display: none;"></audio>
+
+    <!-- Scripts -->
+    <script src="messages.js"></script>
+    <script src="app.js?v=14"></script>
+</body>
+</html>
