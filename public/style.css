@@ -165,6 +165,27 @@ button:hover {
     animation: blink 1.5s infinite;
 }
 
+.inline-error-popup {
+    margin-top: 14px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid #f7a4ae;
+    background: #fff0f2;
+    color: #a3162d;
+    font-size: 1em;
+    font-weight: 700;
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateY(-4px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.inline-error-popup.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
 @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.5; }

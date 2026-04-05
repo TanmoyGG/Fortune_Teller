@@ -7,12 +7,12 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Testing specific cards mapping
     const cardData = [
-        { month: "বৈশাখ", serial: "0007221993" },
-        { month: "জ্যৈষ্ঠ", serial: "0007486798" },
-        { month: "আষাঢ়", serial: "0006963607" },
-        { month: "শ্রাবণ", serial: "0007033364" },
-        { month: "ভাদ্র", serial: "0007156002" },
-        { month: "আশ্বিন", serial: "0007207478" },
+        { month: "বৈশাখ", serial: "0117626829" },
+        { month: "জ্যৈষ্ঠ", serial: "0116532902" },
+        { month: "আষাঢ়", serial: "0116396426" },
+        { month: "শ্রাবণ", serial: "0117727182" },
+        { month: "ভাদ্র", serial: "0117705268" },
+        { month: "আশ্বিন", serial: "0117626917" },
         { month: "কার্তিক", serial: "0117413818" },
         { month: "অগ্রহায়ণ", serial: "0116574830" },
         { month: "পৌষ", serial: "0117417035" },
@@ -34,10 +34,12 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const textInstruction = document.getElementById("instruction-text");
     const textFortune = document.getElementById("fortune-text");
+    const inlineErrorPopup = document.getElementById("inline-error-popup");
     const ttsPlayer = document.getElementById("tts-player");
     let ttsQueue = [];
     let isSpeaking = false;
     let currentFortuneIndex = -1;
+    let inlineErrorTimer = null;
     
     // Bangali Number Converter
     const banglaNumbers = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
@@ -84,6 +86,22 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!name) return;
         const encodedName = encodeURIComponent(name);
         enqueueAudio(`/api/name-audio?name=${encodedName}`);
+    }
+
+    function showInlineError(message) {
+        if (!inlineErrorPopup) return;
+
+        inlineErrorPopup.textContent = message;
+        inlineErrorPopup.classList.add("show");
+
+        if (inlineErrorTimer) {
+            clearTimeout(inlineErrorTimer);
+        }
+
+        inlineErrorTimer = setTimeout(() => {
+            inlineErrorPopup.classList.remove("show");
+            inlineErrorTimer = null;
+        }, 4000);
     }
 
     // Utility for switching screens
@@ -151,6 +169,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Spacebar shortcut for welcome screen start action
+    document.addEventListener("keydown", (e) => {
+        if (!screenWelcome.classList.contains("active")) return;
+        if (e.code !== "Space" || e.repeat) return;
+
+        e.preventDefault();
+        btnStart.click();
+    });
+
     // Enter key support for input
     // COMMENTED OUT FOR TESTING: Name input listener disabled
     // inputName.addEventListener("keypress", (e) => {
@@ -160,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // });
     
     // Restart logic
-    btnRestart.addEventListener("click", () => {
+    function restartToWelcome() {
         // COMMENTED OUT FOR TESTING: Reset inputName
         // inputName.value = "";
         currentUser = "";
@@ -172,8 +199,43 @@ document.addEventListener("DOMContentLoaded", () => {
             ttsPlayer.pause();
             ttsPlayer.currentTime = 0;
         }
+
+        if (inlineErrorTimer) {
+            clearTimeout(inlineErrorTimer);
+            inlineErrorTimer = null;
+        }
+        if (inlineErrorPopup) {
+            inlineErrorPopup.classList.remove("show");
+            inlineErrorPopup.textContent = "";
+        }
+
         switchScreen(screenFortune, screenWelcome);
         removeKeyboardNFCTracking(); // Cleanup
+    }
+
+    if (btnRestart) {
+        btnRestart.addEventListener("click", restartToWelcome);
+    }
+
+    // Hidden shortcut: Ctrl+R on instruction/fortune screens returns to welcome.
+    document.addEventListener("keydown", (e) => {
+        if (!(e.ctrlKey && e.key.toLowerCase() === "r")) return;
+
+        const isInstructionActive = screenInstruction.classList.contains("active");
+        const isFortuneActive = screenFortune.classList.contains("active");
+        if (!isInstructionActive && !isFortuneActive) return;
+
+        e.preventDefault();
+        if (isInstructionActive) {
+            switchScreen(screenInstruction, screenWelcome);
+            removeKeyboardNFCTracking();
+            if (inlineErrorPopup) {
+                inlineErrorPopup.classList.remove("show");
+                inlineErrorPopup.textContent = "";
+            }
+        } else {
+            restartToWelcome();
+        }
     });
 
     // Initial background for first screen
@@ -258,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             const errorMsg = `দয়া করে ${cardData[selectedCardIndex].month} কার্ডটি তুলুন।`;
             enqueueAudio(`audio_cartoon/wrong_month_${selectedCardIndex + 1}.mp3`);
-            alert(errorMsg);
+            showInlineError(errorMsg);
         }
     }
 

@@ -1,138 +1,142 @@
-# Deployment Guide (Hostinger)
+# Deployment Guide
 
-This project uses:
-- Static frontend from `public/`
-- Node.js backend (`server.js`) for dynamic Bangla name audio at `/api/name-audio`
+This project now has two deployment targets:
+1. Netlify (first testing phase)
+2. Hostinger subdomain (production phase)
 
-## 1. Pre-Deployment Checklist
+Current app behavior relevant to deployment:
+- Kiosk app is served from `public/index.html`
+- Mobile fortune page is `public/mobile-fortune.html`
+- Kiosk audio currently uses static files from `public/audio_cartoon/`
+- Name input/read is currently disabled in UI (code kept commented)
 
-Before uploading, ensure:
-- `npm install` works locally
-- `npm start` runs locally
-- `http://localhost:3000` opens the app
-- Name audio endpoint works:
-  - `GET /api/name-audio?name=Tanmoy`
-- Static audio files exist in `public/audio/`
+## A. Pre-Deployment Checklist (Do This First)
 
-Optional (if messages changed):
+Before any deployment:
+1. `npm install` works locally
+2. `npm start` runs locally
+3. `http://localhost:3000` opens kiosk page
+4. `http://localhost:3000/mobile-fortune.html` opens mobile page
+5. `public/audio_cartoon/` exists and contains required mp3 files
 
-```bash
-npm run generate:audio
-```
+Important: `public/audio_cartoon/` is ignored by git in this repo. If you deploy directly from GitHub, these audio files will NOT be present unless you change that policy.
 
-## 2. Required Files to Upload
+## B. Netlify Deployment (Testing First)
 
-Upload the full project except local-only folders:
+Netlify free is static-first, so use it for frontend testing now.
+
+### Recommended method for your current setup: Manual deploy from local folder
+
+Reason: local folder already has generated `public/audio_cartoon/` files.
+
+Steps:
+1. Ensure local `public/audio_cartoon/` is fully generated.
+2. Zip the contents of `public/` (or drag the folder in Netlify manual deploy).
+3. In Netlify: **Add new site** -> **Deploy manually**.
+4. Upload the static `public` site files.
+5. After deploy, verify:
+  - `/` (kiosk page)
+  - `/mobile-fortune.html` (mobile page)
+
+If kiosk audio is missing, check whether `audio_cartoon/*.mp3` was included in uploaded files.
+
+### Optional method: Git-based Netlify deploy
+
+Use only if you decide to track audio in git or generate audio in CI.
+
+Netlify settings for Git deploy:
+- Build command: (leave empty)
+- Publish directory: `public`
+
+## C. Hostinger Deployment (Next Phase, Production)
+
+Use Hostinger Node app for full project deployment (including backend endpoints).
+
+### Files/Folders to upload
+
+Required:
 - `public/`
-- `scripts/` (optional on production, useful for maintenance)
 - `server.js`
 - `package.json`
 - `package-lock.json`
+
+Optional but recommended:
+- `scripts/` (for server-side audio regeneration)
 - `README.md`
 - `DEPLOY.md`
 
 Do NOT upload:
 - `node_modules/`
 - `.venv/`
-- local temp/log files
+- local logs/temp files
 
-## 3. Hostinger Node App Setup
+### Hostinger hPanel Node setup
 
-In Hostinger hPanel:
-1. Create/select your subdomain (example: `fortune.yourdomain.com`).
-2. Open **Node.js** app setup.
-3. Set app root to your uploaded project directory.
-4. Set startup file to:
-   - `server.js`
-5. Set Node version to a modern LTS (18+ recommended).
-6. Install dependencies (via panel or SSH):
+1. Create/select subdomain (example: `fortune.yourdomain.com`)
+2. Open Node.js app setup
+3. App root: project directory
+4. Startup file: `server.js`
+5. Node version: 18+
+6. Install dependencies:
 
 ```bash
 npm install --production
 ```
 
-7. Start the app.
+7. Start app
 
-## 4. Environment Variables
+## D. Environment and Runtime Notes
 
-No required env vars for basic run.
+- `PORT` is optional; Hostinger usually injects it.
+- Server already uses `process.env.PORT || 3000`.
 
-Optional:
-- `PORT` (Hostinger usually injects this automatically)
-
-The server already supports this pattern:
-- `process.env.PORT || 3000`
-
-## 5. Name Audio Cache Directory (Important)
-
-Dynamic name audio is cached to:
+If `/api/name-audio` is ever used later, ensure this directory is writable:
 - `public/audio/names/`
 
-Ensure this directory is writable by the Node process.
+## E. Health Checks After Deploy
 
-If permissions fail, you may see 500 errors from `/api/name-audio`.
+Netlify checks:
+1. `https://<netlify-domain>/`
+2. `https://<netlify-domain>/mobile-fortune.html`
 
-Quick fix:
-- Create directory manually if missing
-- Ensure write permission on `public/audio/names/`
+Hostinger checks:
+1. `https://<your-subdomain>/`
+2. `https://<your-subdomain>/mobile-fortune.html`
+3. (Optional) `https://<your-subdomain>/api/name-audio?name=Tanmoy`
 
-## 6. Health Checks After Deploy
+Flow checks:
+- Kiosk flow starts normally
+- Wrong-card inline popup appears and auto-hides
+- `Ctrl+R` shortcut works on instruction/fortune screens as restart shortcut
+- Mobile page shows daily fixed fortune per browser (cookie-based)
 
-Open these URLs in browser:
-1. `https://your-subdomain/` -> app loads
-2. `https://your-subdomain/api/name-audio?name=Tanmoy` -> MP3 downloads/plays
+## F. Common Issues
 
-In app flow test:
-- Enter name
-- Hear instruction with name in sequence
-- Scan correct card
-- Fortune text + fortune audio both work
+### Kiosk loads but no audio
+- `audio_cartoon` files missing in deploy artifact
+- Re-upload including `public/audio_cartoon/`
 
-## 7. Common Issues and Fixes
+### Old JS/CSS still visible
+- Hard refresh (`Ctrl+F5`)
+- Purge Netlify/edge cache if needed
 
-### Issue: App opens but no audio for names
-- Check `/api/name-audio` URL directly
-- Check server logs for `TTS exception`
-- Verify `public/audio/names/` permissions
+### Hostinger startup failure
+- Check startup file (`server.js`)
+- Check Node version and dependencies
+- Review runtime logs
 
-### Issue: Old JS/CSS still loading
-- Browser hard refresh (`Ctrl + F5`)
-- If using CDN/proxy cache, purge cache
+## G. Safe Release Workflow
 
-### Issue: Name audio works locally but not on server
-- Check outbound internet access from server to Google TTS endpoint
-- Check SSL/HTTPS and mixed content (always use HTTPS in production)
+1. Commit and push code
+2. Validate local smoke test
+3. Deploy to Netlify for quick static verification
+4. Promote to Hostinger subdomain
+5. Run health checks
 
-### Issue: Startup failure
-- Verify startup file is `server.js`
-- Verify Node version and dependencies installed
-- Check host logs for missing module errors
+## H. Rollback
 
-## 8. Safe Update Workflow
-
-For each release:
-1. Pull/upload code update
-2. Run:
-
-```bash
-npm install --production
-```
-
-3. (If messages changed) run:
-
-```bash
-npm run generate:audio
-```
-
-4. Restart Node app
-5. Run health checks above
-
-## 9. Rollback Plan
-
-Keep previous deploy zip/tag.
-If release fails:
-1. Restore previous version files
+Keep previous release tag/zip.
+If a release fails:
+1. Restore previous version
 2. `npm install --production`
 3. Restart app
-
-This gives quick recovery without data migration complexity.

@@ -1,0 +1,103 @@
+:root {
+    --theme-blue: #167cc9;
+    --theme-blue-soft: #e9f6ff;
+    --theme-text: #0f2a3f;
+    --theme-white: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: "Noto Sans Bengali", "Hind Siliguri", sans-serif;
+    color: var(--theme-text);
+    background:
+        radial-gradient(circle at 12% 8%, #d9efff 0%, #f4faff 25%, transparent 55%),
+        radial-gradient(circle at 88% 10%, #e2f3ff 0%, #f7fcff 24%, transparent 54%),
+        linear-gradient(180deg, #ffffff 0%, #f6fbff 100%);
+}
+
+body {
+    position: relative;
+    overflow-x: hidden;
+}
+
+.mobile-shell {
+    width: min(94vw, 720px);
+    min-height: 100vh;
+    margin: 0 auto;
+    padding: clamp(16px, 4vw, 30px) clamp(14px, 4vw, 24px) clamp(160px, 24vw, 220px);
+    display: flex;
+    flex-direction: column;
+}
+
+.top-logos {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.logo-left,
+.logo-right {
+    display: block;
+    width: auto;
+    height: clamp(48px, 12vw, 84px);
+    object-fit: contain;
+}
+
+.fortune-section {
+    flex: 1;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    text-align: center;
+    gap: 16px;
+}
+
+.fortune-label {
+    margin: 0;
+    font-size: clamp(18px, 4.5vw, 28px);
+    color: var(--theme-blue);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.fortune-card {
+    width: min(100%, 620px);
+    background: linear-gradient(180deg, #ffffff 0%, var(--theme-blue-soft) 100%);
+    border: 2px solid rgba(22, 124, 201, 0.30);
+    border-radius: 18px;
+    box-shadow: 0 10px 28px rgba(11, 78, 127, 0.14);
+    padding: clamp(18px, 4vw, 30px);
+}
+
+#fortuneText {
+    margin: 0;
+    font-size: clamp(20px, 5vw, 34px);
+    line-height: 1.7;
+    font-weight: 600;
+}
+
+.tepa-footer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    display: block;
+    z-index: 0;
+    pointer-events: none;
+}
+
+@media (min-width: 900px) {
+    .mobile-shell {
+        padding-bottom: 240px;
+    }
+}
