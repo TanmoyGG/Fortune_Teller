@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnStart = document.getElementById("btnStart");
     const btnRestart = document.getElementById("btnRestart");
     const btnStartNFC = document.getElementById("btnStartNFC");
+    const screenBg = document.getElementById("screen-bg");
     const pageBody = document.body;
     
     const textInstruction = document.getElementById("instruction-text");
@@ -118,13 +119,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateBackground(screenId) {
-        pageBody.classList.remove("bg-welcome", "bg-instruction", "bg-fortune");
+        if (!screenBg) return;
+
         if (screenId === "screen-welcome") {
-            pageBody.classList.add("bg-welcome");
+            screenBg.src = "assets/background/1.gif";
         } else if (screenId === "screen-instruction") {
-            pageBody.classList.add("bg-instruction");
+            screenBg.src = "assets/background/2.gif";
         } else if (screenId === "screen-fortune") {
-            pageBody.classList.add("bg-fortune");
+            screenBg.src = "assets/background/3.gif";
         }
     }
 

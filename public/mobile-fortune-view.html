@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>আপনার ভাগ্য দেখুন</title>
+    <title>মোবাইল ভাগ্য বার্তা</title>
     <link rel="stylesheet" href="mobile-fortune.css">
 </head>
 <body>
@@ -13,16 +13,19 @@
             <img src="assets/mobile/Boishakhi logo.png" alt="Boishakhi Logo" class="logo-right">
         </header>
 
-        <section class="fortune-section entry-section">
-            <p class="fortune-label">স্বাগতম</p>
+        <section class="fortune-section" aria-live="polite">
+            <p class="fortune-label">আজকের ভাগ্যবার্তা</p>
             <div class="fortune-card">
-                <p class="entry-text">আপনার আজকের ভাগ্যবার্তা দেখতে নিচের বোতামে চাপ দিন</p>
+                <p id="fortuneText">ভাগ্য বার্তা লোড হচ্ছে...</p>
             </div>
-            <button id="btnEnterFortune" class="enter-btn" type="button">আপনার ভাগ্য দেখুন</button>
+            <p id="audioHint" class="audio-hint" hidden>ভয়েস শোনার জন্য স্ক্রিনে একবার ট্যাপ করুন</p>
         </section>
     </main>
 
     <img src="assets/mobile/Tepa.png" alt="Tepa" class="tepa-footer">
-    <script src="mobile-fortune-entry.js"></script>
+    <audio id="mobile-tts-player" style="display: none;"></audio>
+
+    <script src="messages.js"></script>
+    <script src="mobile-fortune.js"></script>
 </body>
 </html>

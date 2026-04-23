@@ -84,6 +84,49 @@ body {
     font-weight: 600;
 }
 
+.entry-section {
+    gap: 18px;
+}
+
+.entry-text {
+    margin: 0;
+    font-size: clamp(18px, 4.5vw, 28px);
+    line-height: 1.6;
+    font-weight: 600;
+}
+
+.enter-btn {
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(135deg, #1f8adf, #1066ab);
+    color: #fff;
+    padding: 12px 24px;
+    font-size: clamp(16px, 4vw, 20px);
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 8px 18px rgba(16, 102, 171, 0.3);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.enter-btn:active {
+    transform: translateY(1px);
+}
+
+.enter-btn:hover {
+    box-shadow: 0 10px 20px rgba(16, 102, 171, 0.34);
+}
+
+.audio-hint {
+    margin: 0;
+    font-size: clamp(13px, 3.6vw, 16px);
+    color: #0f5f9d;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(22, 124, 201, 0.22);
+    border-radius: 999px;
+    padding: 7px 14px;
+}
+
 .tepa-footer {
     position: fixed;
     left: 0;
